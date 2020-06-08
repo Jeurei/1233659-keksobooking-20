@@ -9,28 +9,31 @@ var TITLES = ['lorem', 'ipsum', 'dolor', 'sit'];
 var DESCRIPTIONS = ['lorem ipsum', 'dolor sit', 'amet consectetur', 'adipiscing elit'];
 var locationRangeMin = 130;
 var locationRangeMax = 630;
-
-function getRandomInRange(max, min) {
-  return min === undefined ? Math.floor(Math.random() * max) : Math.floor(min + Math.random() * (max + 1 - min));
+var pinsBlockWidth = 0;
+function getRandomInRange(min, max) {
+  return Math.floor(min + Math.random() * (max + 1 - min));
 }
 
 if (document.querySelector('.map')) {
-  var pinsBlockWidth = document.querySelector('.map').offsetWidth;
+  pinsBlockWidth = document.querySelector('.map').offsetWidth;
 }
 
 function createObj() {
-  var x = getRandomInRange(pinsBlockWidth, 0);
-  var y = getRandomInRange(locationRangeMax, locationRangeMin);
+  var x = getRandomInRange(0, pinsBlockWidth);
+  var y = getRandomInRange(locationRangeMin, locationRangeMax);
   var features = [];
-  var photos = [];
-  var quantityOfFeatures = getRandomInRange(FEATURES.length, 0);
-  var quantityOfPhotos = getRandomInRange(PHOTOS.length, 0);
+
+  var quantityOfFeatures = getRandomInRange(0, FEATURES.length);
+
   for (var i = 0; i < quantityOfFeatures; i++) {
-    features.push(FEATURES[getRandomInRange(FEATURES.length)]);
+    features.push(FEATURES[getRandomInRange(0, FEATURES.length)]);
   }
 
+  var photos = [];
+  var quantityOfPhotos = getRandomInRange(0, PHOTOS.length);
+
   for (var j = 0; j < quantityOfPhotos; j++) {
-    photos.push(PHOTOS[getRandomInRange(PHOTOS.length)]);
+    photos.push(PHOTOS[getRandomInRange(0, PHOTOS.length)]);
   }
 
   return {
@@ -42,16 +45,16 @@ function createObj() {
       y: y
     },
     offer: {
-      title: TITLES[getRandomInRange(TITLES.length)],
+      title: TITLES[getRandomInRange(0, TITLES.length)],
       adress: x + ' ' + y,
-      price: getRandomInRange(10000, 1000),
-      type: ROOM_TYPES[getRandomInRange(ROOM_TYPES.length)],
-      rooms: getRandomInRange(4, 1),
-      guests: getRandomInRange(6, 0),
-      checkin: CHECKIN[getRandomInRange(CHECKIN.length)],
-      checkout: CHECKOUT[getRandomInRange(CHECKOUT.length)],
+      price: getRandomInRange(1000, 10000),
+      type: ROOM_TYPES[getRandomInRange(0, ROOM_TYPES.length)],
+      rooms: getRandomInRange(1, 4),
+      guests: getRandomInRange(0, 6),
+      checkin: CHECKIN[getRandomInRange(0, CHECKIN.length)],
+      checkout: CHECKOUT[getRandomInRange(0, CHECKOUT.length)],
       features: features,
-      description: DESCRIPTIONS[getRandomInRange(DESCRIPTIONS.length)],
+      description: DESCRIPTIONS[getRandomInRange(0, DESCRIPTIONS.length)],
       photos: photos,
     }
   };
@@ -59,14 +62,17 @@ function createObj() {
 
 function createArray() {
   var arr = [];
+
   for (var i = 0; i < QUANTITY_OF_OBJ; i++) {
     arr.push(createObj());
   }
+
   return arr;
 }
 
 function createFragment(arr) {
   var fragment = document.createDocumentFragment();
+
   arr.forEach(function (el) {
     var offerEl = template.cloneNode(true);
     offerEl.style.left = el.location.x - offerEl.offsetWidth / 2 + 'px';
@@ -75,6 +81,7 @@ function createFragment(arr) {
     offerEl.firstChild.alt = el.offer.title;
     fragment.appendChild(offerEl);
   });
+
   return fragment;
 }
 
