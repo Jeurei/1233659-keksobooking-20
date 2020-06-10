@@ -63,22 +63,23 @@ function createObj(index) {
 
 function createCard(obj) {
   var card = document.querySelector('#card').content.querySelector('.map__card').cloneNode(true);
+  var type = card.querySelector('.popup__type');
   card.querySelector('.popup__title').textContent = obj.offer.title;
   card.querySelector('.popup__text--address').textContent = obj.offer.adress;
   card.querySelector('.popup__text--price').textContent = obj.offer.price + ' ₽/ночь';
 
   switch (obj.offer.type) {
     case 'flat':
-      card.querySelector('.popup__type').textContent = 'Квартира';
+      type.textContent = 'Квартира';
       break;
     case 'bungalo':
-      card.querySelector('.popup__type').textContent = 'Бунгало';
+      type.textContent = 'Бунгало';
       break;
     case 'house':
-      card.querySelector('.popup__type').textContent = 'Дом';
+      type.textContent = 'Дом';
       break;
     case 'palace':
-      card.querySelector('.popup__type').textContent = 'Дворец';
+      type.textContent = 'Дворец';
   }
 
   card.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.guests + ' гостей';
@@ -103,6 +104,7 @@ function createCard(obj) {
   var photos = card.querySelector('.popup__photos');
 
   if (obj.offer.photos.length >= 1) {
+
     while (photos.children.length < obj.offer.photos.length) {
       var img = document.createElement('img');
       img.classList.add('popup__photo');
