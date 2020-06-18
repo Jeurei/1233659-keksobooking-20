@@ -210,15 +210,6 @@ var onEnterPinPress = function (evt) {
 var checkInvalidInput = function () {
   var formCapacityValue = +formCapacity.value;
 
-
-  if (roomsValidMap[formRooms.value] < formCapacityValue) {
-    formCapacity.setCustomValidity(roomsValidityErrorMesages[formRooms.value]);
-    formSubmit.setAttribute('disabled', true);
-  } else {
-    formCapacity.setCustomValidity('');
-    formSubmit.removeAttribute('disabled');
-  }
-
   if (formRooms.value === '100' && formCapacityValue !== roomsValidMap[formRooms.value]) {
     formCapacity.setCustomValidity(roomsValidityErrorMesages[formRooms.value]);
     formSubmit.setAttribute('disabled', true);
@@ -227,6 +218,16 @@ var checkInvalidInput = function () {
     formCapacity.setCustomValidity('');
     formSubmit.removeAttribute('disabled');
   }
+
+  if (roomsValidMap[formRooms.value] < formCapacityValue) {
+
+    formCapacity.setCustomValidity(roomsValidityErrorMesages[formRooms.value]);
+    formSubmit.setAttribute('disabled', true);
+  } else {
+    formCapacity.setCustomValidity('');
+    formSubmit.removeAttribute('disabled');
+  }
+
 
 };
 
