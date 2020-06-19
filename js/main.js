@@ -282,7 +282,7 @@ var checkInvalidInput = function (evt) {
     form.querySelector('#title').setCustomValidity('');
     formSubmit.removeAttribute('disabled');
   }
-  
+
   form.querySelector('#price').placeholder = offerTypePricesMap[form.querySelector('#type').value];
 
   if (offerTypePricesMap[form.querySelector('#type').value] > form.querySelector('#price').value) {
