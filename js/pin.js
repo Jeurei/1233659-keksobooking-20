@@ -2,12 +2,17 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var MAIN_PIN_TOP_LIMIT = 130;
+  var MAIN_PIN_BOTTOM_LIMIT = 630;
   var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
   var formAddress = form.querySelector('#address');
   var map = document.querySelector('.map__pins');
-  var mapHeight = map.offsetHeight;
   var mapWidth = map.offsetWidth;
+
+  function getMainPinChords() {
+    return (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
+  }
 
   var startDrag = function (evt) {
     evt.preventDefault();
@@ -32,10 +37,11 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      if (mainPin.offsetTop - shift.y < 0) {
-        mainPin.style.top = 0;
-      } else if (mainPin.offsetTop + mainPin.offsetHeight - shift.y > mapHeight) {
-        mainPin.style.top = mapHeight - mainPin.offsetHeight + 'px';
+      if (mainPin.offsetTop - shift.y < MAIN_PIN_TOP_LIMIT) {
+        mainPin.style.top = MAIN_PIN_TOP_LIMIT;
+      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT) {
+        // я не уверен как тут лучше считать. 630 с вычетом высоты пина или нет в тз не описанно
+        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT + 'px';
       } else {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
@@ -46,7 +52,7 @@
       } else {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
-      formAddress.value = (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
+      formAddress.value = getMainPinChords();
     };
 
     var onMouseUp = function (upEvt) {
@@ -61,7 +67,7 @@
       }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      formAddress.value = (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
+      formAddress.value = getMainPinChords;
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
