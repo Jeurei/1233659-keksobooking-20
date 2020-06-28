@@ -9,10 +9,6 @@
   var mapFormFeatures = mapForm.querySelectorAll('.map__features');
   var mainPin = document.querySelector('.map__pin--main');
 
-  function getMainPinChords() {
-    return (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
-  }
-
   function addAttributeDisabled(arr) {
     arr.forEach(function (elem) {
       elem.setAttribute('disabled', true);
@@ -33,7 +29,7 @@
     addAttributeDisabled(mapFormFilters);
     addAttributeDisabled(mapFormFeatures);
 
-    formAddress.value = getMainPinChords();
+    formAddress.value = window.pin.setMainPinChords();
     mainPin.addEventListener('mousedown', window.map.activateMap);
     mainPin.addEventListener('keydown', window.map.onEnterMainPinPress);
   }

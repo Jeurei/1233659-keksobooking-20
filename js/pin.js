@@ -10,7 +10,7 @@
   var map = document.querySelector('.map__pins');
   var mapWidth = map.offsetWidth;
 
-  function getMainPinChords() {
+  function setMainPinChords() {
     return (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
   }
 
@@ -37,22 +37,22 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      if (mainPin.offsetTop - shift.y < MAIN_PIN_TOP_LIMIT) {
+      if (mainPin.offsetTop + mainPin.offsetHeight - shift.y < MAIN_PIN_TOP_LIMIT) {
         mainPin.style.top = MAIN_PIN_TOP_LIMIT;
-      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT) {
+      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight) {
         // я не уверен как тут лучше считать. 630 с вычетом высоты пина или нет в тз не описанно
-        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT + 'px';
+        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight + 'px';
       } else {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
-      if (mainPin.offsetLeft - shift.x < 0) {
-        mainPin.style.left = 0;
-      } else if (mainPin.offsetLeft - shift.x > mapWidth - mainPin.offsetWidth) {
-        mainPin.style.left = mapWidth - mainPin.offsetWidth + 'px';
+      if (mainPin.offsetLeft - shift.x < 0 - mainPin.offsetWidth / 2) {
+        mainPin.style.left = 0 - mainPin.offsetWidth / 2 + 'px';
+      } else if (mainPin.offsetLeft - shift.x > mapWidth - mainPin.offsetWidth / 2) {
+        mainPin.style.left = mapWidth - mainPin.offsetWidth / 2 + 'px';
       } else {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
-      formAddress.value = getMainPinChords();
+      formAddress.value = setMainPinChords();
     };
 
     var onMouseUp = function (upEvt) {
@@ -67,7 +67,7 @@
       }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      formAddress.value = getMainPinChords;
+      formAddress.value = setMainPinChords();
     };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -94,6 +94,6 @@
   window.pin = {
     createFragment: createFragment,
     startDrag: startDrag,
+    setMainPinChords: setMainPinChords,
   };
-
 })();
