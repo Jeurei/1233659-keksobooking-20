@@ -48,10 +48,8 @@
 
     if (pinTemplate) {
       pinsArr = window.data.createArray();
-      // можно так делать?
       window.map.pinsArr = pinsArr;
       mapPins.appendChild(window.pin.createFragment(pinsArr));
-
     }
 
     form.classList.remove('ad-form--disabled');
@@ -75,9 +73,10 @@
     formPrice.addEventListener('input', window.form.checkInvalidPriceInput);
     formTimeIn.addEventListener('change', window.form.checkInvalidTimeInput);
     formTimeOut.addEventListener('change', window.form.checkInvalidTimeInput);
-    mainPin.removeEventListener('click', activateMap);
+    mainPin.removeEventListener('mousedown', activateMap);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     document.addEventListener('keydown', window.card.onEscPressClosePopup);
+    mainPin.addEventListener('mousedown', window.pin.startDrag);
   };
 
   window.map = {

@@ -29,7 +29,7 @@
     addAttributeDisabled(mapFormFilters);
     addAttributeDisabled(mapFormFeatures);
 
-    formAddress.value = (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight / 2));
+    formAddress.value = window.pin.setMainPinChords();
     mainPin.addEventListener('mousedown', window.map.activateMap);
     mainPin.addEventListener('keydown', window.map.onEnterMainPinPress);
   }
