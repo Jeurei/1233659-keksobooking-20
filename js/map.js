@@ -9,7 +9,6 @@
   var mainPin = document.querySelector('.map__pin--main');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapPins = document.querySelector('.map__pins');
-  var pinsArr = [];
   var formCapacity = form.querySelector('#capacity');
   var formRoomNumber = form.querySelector('#room_number');
   var formTitle = form.querySelector('#title');
@@ -18,6 +17,7 @@
   var formTimeIn = form.querySelector('#timein');
   var formTimeOut = form.querySelector('#timeout');
   var formAddress = form.querySelector('#address');
+
 
   function removeAttributeDisabled(arr) {
     arr.forEach(function (elem) {
@@ -42,14 +42,17 @@
     }
   };
 
+  function onSuccess(arr) {
+    mapPins.appendChild(window.pin.createFragment(arr));
+    window.map.pinsArr = arr;
+  }
+
   var activateMap = function () {
     map.classList.remove('map--faded');
     clearPins();
 
     if (pinTemplate) {
-      pinsArr = window.data.createArray();
-      window.map.pinsArr = pinsArr;
-      mapPins.appendChild(window.pin.createFragment(pinsArr));
+      window.backend.load(onSuccess);
     }
 
     form.classList.remove('ad-form--disabled');

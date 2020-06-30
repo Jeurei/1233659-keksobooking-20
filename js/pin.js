@@ -1,3 +1,4 @@
+
 'use strict';
 (function () {
   var PIN_WIDTH = 50;
@@ -37,11 +38,10 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      if (mainPin.offsetTop + mainPin.offsetHeight - shift.y < MAIN_PIN_TOP_LIMIT) {
+      if (mainPin.offsetTop + mainPin.offsetHeight / 2 - shift.y < MAIN_PIN_TOP_LIMIT) {
         mainPin.style.top = MAIN_PIN_TOP_LIMIT;
-      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight) {
-        // я не уверен как тут лучше считать. 630 с вычетом высоты пина или нет в тз не описанно
-        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight + 'px';
+      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight / 2) {
+        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight / 2 + 'px';
       } else {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
@@ -77,15 +77,22 @@
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var fragment = document.createDocumentFragment();
 
+    for (var i = 0; i < arr.length; i++) {
+      arr[i].id = i;
+    }
+
     arr.forEach(function (elem) {
       var offerEl = pinTemplate.cloneNode(true);
       offerEl.style.left = elem.location.x - PIN_WIDTH / 2 + 'px';
       offerEl.style.top = elem.location.y - PIN_HEIGHT + 'px';
       offerEl.firstChild.src = elem.author.avatar;
       offerEl.firstChild.alt = elem.offer.title;
-      offerEl.setAttribute('data-id', elem.offer.id);
+      offerEl.setAttribute('data-id', elem.id);
       offerEl.addEventListener('keydown', window.card.onEnterPinPress);
       offerEl.addEventListener('click', window.card.renderCard);
+      if (!elem.hasOwnProperty('offer')) {
+        offerEl.classList.add('visually-hidden');
+      }
       fragment.appendChild(offerEl);
     });
 

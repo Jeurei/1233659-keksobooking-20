@@ -64,7 +64,6 @@
 
     return arr;
   }
-  // правильно ли тут передавать только функцию по созданию массива объектов?
   window.data = {
     createArray: createArray,
   };
