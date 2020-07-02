@@ -52,7 +52,7 @@
     clearPins();
 
     if (pinTemplate) {
-      window.backend.load(onSuccess);
+      window.backend.load(onSuccess, window.util.onError);
     }
 
     form.classList.remove('ad-form--disabled');

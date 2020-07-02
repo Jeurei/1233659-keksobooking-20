@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var QUANTITY_OF_OBJ = 8;
   var ROOM_TYPES = ['palace', 'flat', 'house', 'bungalo'];
