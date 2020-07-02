@@ -33,7 +33,7 @@
     card.querySelector('.popup__text--price').textContent = object.offer.price + ' ₽/ночь';
     type.textContent = OfferTypeMap[object.offer.type.toUpperCase()];
     card.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
-    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.timein + ', выезд до ' + object.offer.timeout;
+    card.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
     features = card.querySelector('.popup__features');
     features.innerHTML = '';
     object.offer.features.forEach(function (elem) {
