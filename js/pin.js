@@ -76,16 +76,14 @@
   function createFragment(arr) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var fragment = document.createDocumentFragment();
-    // я так понимаю либо делать счётчик либо делать цикл for хотел оставить метод
-    var counter = 0;
 
-    arr.forEach(function (elem) {
+    arr.forEach(function (elem, i) {
       var offerEl = pinTemplate.cloneNode(true);
       offerEl.style.left = elem.location.x - PIN_WIDTH / 2 + 'px';
       offerEl.style.top = elem.location.y - PIN_HEIGHT + 'px';
       offerEl.firstChild.src = elem.author.avatar;
       offerEl.firstChild.alt = elem.offer.title;
-      offerEl.setAttribute('data-id', counter++);
+      offerEl.setAttribute('data-id', i);
       offerEl.addEventListener('keydown', window.card.onEnterPinPress);
       offerEl.addEventListener('click', window.card.renderCard);
       if (!elem.hasOwnProperty('offer')) {
