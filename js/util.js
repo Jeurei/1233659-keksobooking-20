@@ -22,18 +22,18 @@
     }
 
     if (errorTemplate) {
-      errorTemplate = errorTemplate.content.querySelector('.error').cloneNode(true);
+      var errorPopup = errorTemplate.content.querySelector('.error').cloneNode(true);
       if (text) {
-        errorTemplate.querySelector('.error__message').textContent = text;
+        errorPopup.querySelector('.error__message').textContent = text;
       }
 
       document.addEventListener('keydown', onErrorEscPress);
 
       document.addEventListener('click', closeError);
 
-      errorTemplate.querySelector('.error__button').addEventListener('click', closeError);
+      errorPopup.querySelector('.error__button').addEventListener('click', closeError);
 
-      document.querySelector('.main').appendChild(errorTemplate);
+      document.querySelector('.main').appendChild(errorPopup);
     }
   }
 
