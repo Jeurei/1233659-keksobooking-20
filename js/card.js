@@ -98,7 +98,7 @@
 
   var onEscPressClosePopup = function (evt) {
 
-    if (evt.code === window.util.ESC_CODE && !mapFiltersContainer.querySelector('.popup.visually-hidden')) {
+    if (evt.code === window.util.ESC_CODE && !mapFiltersContainer.querySelector('.popup.visually-hidden') && mapFiltersContainer.querySelector('.popup')) {
       evt.preventDefault();
       mapFiltersContainer.querySelector('.popup').removeEventListener('click', closePopup);
       mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');

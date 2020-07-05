@@ -34,4 +34,8 @@
     mainPin.addEventListener('keydown', window.map.onEnterMainPinPress);
   }
   initPage();
+
+  window.main = {
+    initPage: initPage,
+  };
 })();

@@ -17,7 +17,7 @@
   var formTimeIn = form.querySelector('#timein');
   var formTimeOut = form.querySelector('#timeout');
   var formAddress = form.querySelector('#address');
-
+  var resetButton = form.querySelector('.ad-form__reset');
 
   function removeAttributeDisabled(arr) {
     arr.forEach(function (elem) {
@@ -69,6 +69,8 @@
     }
 
     formAddress.value = (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + (mainPin.offsetTop + mainPin.offsetHeight);
+    form.addEventListener('submit', window.form.submit);
+    resetButton.addEventListener('click', window.form.reset);
     formCapacity.addEventListener('change', window.form.checkInvalidRoomsInput);
     formRoomNumber.addEventListener('change', window.form.checkInvalidRoomsInput);
     formTitle.addEventListener('input', window.form.checkInvalidTitleInput);
@@ -85,5 +87,6 @@
   window.map = {
     activateMap: activateMap,
     onEnterMainPinPress: onEnterMainPinPress,
+    clear: clearPins,
   };
 })();
