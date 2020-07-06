@@ -18,9 +18,9 @@
     var photos;
 
     if (evt.target.classList.contains('map__pin')) {
-      object = window.map.pinsArr[evt.target.dataset.id];
+      object = window.map.filterPinsByType[evt.target.dataset.id];
     } else {
-      object = window.map.pinsArr[evt.target.parentNode.dataset.id];
+      object = window.map.filterPinsByType[evt.target.parentNode.dataset.id];
     }
 
     if (!card) {
@@ -97,13 +97,14 @@
   };
 
   var onEscPressClosePopup = function (evt) {
-
-    if (evt.code === window.util.ESC_CODE && !mapFiltersContainer.querySelector('.popup.visually-hidden') && mapFiltersContainer.querySelector('.popup')) {
-      evt.preventDefault();
-      mapFiltersContainer.querySelector('.popup').removeEventListener('click', closePopup);
-      mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');
+    var popup = mapFiltersContainer.querySelector('.popup');
+    if (popup) {
+      if (evt.code === window.util.ESC_CODE && !popup.classList.contains('visually-hidden')) {
+        evt.preventDefault();
+        mapFiltersContainer.querySelector('.popup').removeEventListener('click', closePopup);
+        mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');
+      }
     }
-
   };
   window.card = {
     onEnterClosePopupPress: onEnterClosePopupPress,

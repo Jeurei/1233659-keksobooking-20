@@ -4,16 +4,23 @@
   var URL_LOAD = 'https://javascript.pages.academy/keksobooking/data';
   var URL_SAVE = 'https://javascript.pages.academy/keksobooking';
 
+  function onXhrLoad(xhr, onSuccess, onError) {
+
+    if (xhr.status === 200) {
+      onSuccess(xhr.response);
+    } else {
+      onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+    }
+
+  }
+
+
   function backendLoad(onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onSuccess(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
+      onXhrLoad(xhr, onSuccess, onError);
     });
 
     xhr.addEventListener('error', function () {
@@ -33,12 +40,9 @@
   function backendSave(data, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
+
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onSuccess();
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
+      onXhrLoad(xhr, onSuccess, onError);
     });
 
     xhr.addEventListener('error', function () {
