@@ -11,7 +11,6 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mapPins = document.querySelector('.map__pins');
   var formCapacity = form.querySelector('#capacity');
-  var mapFiltersContainer = map.querySelector('.map__filters-container');
   var formRoomNumber = form.querySelector('#room_number');
   var formTitle = form.querySelector('#title');
   var formPrice = form.querySelector('#price');
@@ -22,20 +21,11 @@
   var resetButton = form.querySelector('.ad-form__reset');
 
   function removeAttributeDisabled(arr) {
+
     arr.forEach(function (elem) {
       elem.removeAttribute('disabled');
     });
-  }
 
-
-  function closePopup() {
-    var popup = mapFiltersContainer.querySelector('.popup');
-    if (popup) {
-      if (!popup.classList.contains('visually-hidden')) {
-        mapFiltersContainer.querySelector('.popup').removeEventListener('click', closePopup);
-        mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');
-      }
-    }
   }
 
   function clearPins() {
@@ -50,14 +40,17 @@
   }
 
   var onEnterMainPinPress = function (evt) {
+
     if (evt.key === window.util.ENTER_CODE) {
       activateMap();
     }
+
   };
 
   function onSuccess(arr) {
     mapPins.appendChild(window.pin.createFragment(arr));
     window.map.pinsArr = arr;
+
     if (mapFormFilters.length !== 0) {
       removeAttributeDisabled(mapFormFilters);
     }
@@ -68,23 +61,32 @@
 
   }
 
+  function appendPins(arr) {
+    clearPins();
+    mapPins.appendChild(window.pin.createFragment(arr));
+  }
+
   function filterPinsByType() {
     var currentType = mapFormTypeFilter.value;
-    closePopup();
+
     if (currentType === 'any') {
-      clearPins();
-      mapPins.appendChild(window.pin.createFragment(window.map.pinsArr));
+      appendPins(window.map.pinsArr);
       return;
     }
+
     var filtredPinsByType = window.map.pinsArr.filter(function (elem) {
       return elem.offer.type === currentType;
     });
+
     window.map.filterPinsByType = filtredPinsByType;
-    clearPins();
-    mapPins.appendChild(window.pin.createFragment(filtredPinsByType));
+    appendPins(filtredPinsByType);
   }
 
-  var mapFormTypeFilterChange = window.util.debounce(filterPinsByType);
+  var mapFormTypeFilterChange = function () {
+    window.card.onFilterChangeClosePopup();
+    window.util.debounce(filterPinsByType)();
+  };
+
 
   var activateMap = function () {
     map.classList.remove('map--faded');

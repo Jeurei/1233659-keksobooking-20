@@ -12,15 +12,16 @@
 
   var createCard = function (evt) {
     var card = mapFiltersContainer.querySelector('.popup');
-    var object;
     var type;
     var features;
     var photos;
+    var object;
+    var target = evt.target.classList.contains('map__pin') ? evt.target.dataset.id : evt.target.parentNode.dataset.id;
 
-    if (evt.target.classList.contains('map__pin')) {
-      object = window.map.filterPinsByType[evt.target.dataset.id];
+    if (window.map.filterPinsByType) {
+      object = window.map.filterPinsByType[target];
     } else {
-      object = window.map.filterPinsByType[evt.target.parentNode.dataset.id];
+      object = window.map.pinsArr[target];
     }
 
     if (!card) {
@@ -76,10 +77,26 @@
   };
 
   var onEnterClosePopupPress = function (evt) {
+
     if (evt.key === window.util.ENTER_CODE) {
       closePopup();
     }
+
   };
+
+  function onFilterChangeClosePopup() {
+    var popup = mapFiltersContainer.querySelector('.popup');
+
+    if (popup) {
+
+      if (!popup.classList.contains('visually-hidden')) {
+        popup.querySelector('.popup__close').removeEventListener('click', closePopup);
+        popup.classList.add('visually-hidden');
+      }
+
+    }
+
+  }
 
   var closePopup = function (evt) {
 
@@ -97,16 +114,23 @@
   };
 
   var onEscPressClosePopup = function (evt) {
+
     var popup = mapFiltersContainer.querySelector('.popup');
+
     if (popup) {
+
       if (evt.code === window.util.ESC_CODE && !popup.classList.contains('visually-hidden')) {
         evt.preventDefault();
-        mapFiltersContainer.querySelector('.popup').removeEventListener('click', closePopup);
+        popup.querySelector('.popup__close').removeEventListener('click', closePopup);
         mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');
       }
+
     }
+
   };
+
   window.card = {
+    onFilterChangeClosePopup: onFilterChangeClosePopup,
     onEnterClosePopupPress: onEnterClosePopupPress,
     closePopup: closePopup,
     renderCard: renderCard,
