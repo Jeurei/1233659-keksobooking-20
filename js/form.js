@@ -15,6 +15,7 @@
   var template = document.querySelector('#success');
   var resetButton = document.querySelector('.ad-form__reset');
   var formAddress = form.querySelector('#address');
+  var mainPin = document.querySelector('.map__pin--main');
   var roomsValidMap = {
     '1': 1,
     '2': 2,
@@ -67,7 +68,17 @@
 
     document.addEventListener('click', closeSuccessPopup);
     document.addEventListener('keydown', onEscPress);
-
+    form.removeEventListener('submit', window.form.submit);
+    resetButton.removeEventListener('click', window.form.reset);
+    formCapacity.removeEventListener('change', window.form.checkInvalidRoomsInput);
+    formRoomNumber.removeEventListener('change', window.form.checkInvalidRoomsInput);
+    formTitle.removeEventListener('input', window.form.checkInvalidTitleInput);
+    formType.removeEventListener('change', window.form.checkInvalidPriceInput);
+    formPrice.removeEventListener('input', window.form.checkInvalidPriceInput);
+    formTimeIn.removeEventListener('change', window.form.checkInvalidTimeInput);
+    formTimeOut.removeEventListener('change', window.form.checkInvalidTimeInput);
+    document.removeEventListener('keydown', window.card.onKeyPressClosePopup);
+    mainPin.removeEventListener('mousedown', window.pin.startDrag);
   }
 
   function onSubmitPress(evt) {

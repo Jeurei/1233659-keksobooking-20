@@ -2,6 +2,7 @@
 (function () {
   var ESC_CODE = 'Escape';
   var ENTER_CODE = 'Enter';
+  var DEBOUNCE_INTERVAL = 500;
   var errorTemplate = document.querySelector('#error');
   function onError(text) {
 
@@ -37,6 +38,21 @@
     }
   }
 
+  function debounce(callback) {
+    var lastTimeout = null;
+    return function () {
+      var parameters = arguments;
+
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+
+      lastTimeout = window.setTimeout(function () {
+        callback.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  }
+
   window.util = {
     ESC_CODE: ESC_CODE,
     ENTER_CODE: ENTER_CODE,
@@ -44,6 +60,7 @@
       return Math.floor(min + Math.random() * (max + 1 - min));
     },
     onError: onError,
+    debounce: debounce,
   };
 
 })();

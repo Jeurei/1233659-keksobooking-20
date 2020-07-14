@@ -5,6 +5,7 @@
   var PIN_HEIGHT = 70;
   var MAIN_PIN_TOP_LIMIT = 130;
   var MAIN_PIN_BOTTOM_LIMIT = 630;
+  var QUANTITY_OF_PINS = 5;
   var mainPin = document.querySelector('.map__pin--main');
   var form = document.querySelector('.ad-form');
   var formAddress = form.querySelector('#address');
@@ -78,6 +79,11 @@
     var fragment = document.createDocumentFragment();
 
     arr.forEach(function (elem, i) {
+
+      if (i > QUANTITY_OF_PINS) {
+        return;
+      }
+
       var offerEl = pinTemplate.cloneNode(true);
       offerEl.style.left = elem.location.x - PIN_WIDTH / 2 + 'px';
       offerEl.style.top = elem.location.y - PIN_HEIGHT + 'px';
