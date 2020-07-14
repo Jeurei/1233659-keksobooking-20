@@ -3,6 +3,9 @@
   var map = document.querySelector('.map');
   var mapFiltersContainer = map.querySelector('.map__filters-container');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var popup = mapFiltersContainer.querySelector('.popup');
+  var popupClose = document.querySelector('.popup__close');
+
   var OfferTypeMap = {
     FLAT: 'квартира',
     PALACE: 'дворец',
@@ -16,7 +19,7 @@
     var features;
     var photos;
     var object;
-    var target = evt.target.classList.contains('map__pin') ? evt.target.dataset.id : evt.target.parentNode.dataset.id;
+    var target = evt.currentTarget.dataset.id;
 
     if (window.map.filterPinsByType) {
       object = window.map.filterPinsByType[target];
@@ -61,6 +64,7 @@
     card.querySelector('.popup__avatar').src = object.author.avatar;
     card.querySelector('.popup__close').addEventListener('keydown', onEnterClosePopupPress);
     card.querySelector('.popup__close').addEventListener('click', closePopup);
+    document.addEventListener('keydown', onEscClosePopupPress);
     return card;
 
   };
@@ -77,6 +81,8 @@
   };
 
   var onEnterClosePopupPress = function (evt) {
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
 
     if (evt.key === window.util.ENTER_CODE) {
       closePopup();
@@ -84,57 +90,48 @@
 
   };
 
+  var onEscClosePopupPress = function (evt) {
+    if (evt.key === window.util.ESC_CODE) {
+      evt.preventDefault();
+      closePopup();
+    }
+  };
+
   function onFilterChangeClosePopup() {
-    var popup = mapFiltersContainer.querySelector('.popup');
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
 
-    if (popup) {
-
-      if (!popup.classList.contains('visually-hidden')) {
-        popup.querySelector('.popup__close').removeEventListener('click', closePopup);
-        popup.classList.add('visually-hidden');
-      }
-
+    if (popup && !popup.classList.contains('visually-hidden')) {
+      closePopup();
     }
 
   }
 
-  var closePopup = function (evt) {
+  var closePopup = function () {
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
 
-    evt.target.closest('.popup').classList.add('visually-hidden');
+    popup.classList.add('visually-hidden');
 
-    evt.target.removeEventListener('keydown', onEnterClosePopupPress);
+    popupClose.removeEventListener('keydown', onEnterClosePopupPress);
 
-    evt.target.removeEventListener('click', closePopup);
+    document.removeEventListener('keydown', onEscClosePopupPress);
+
+    popupClose.removeEventListener('click', closePopup);
   };
 
   var onEnterPinPress = function (evt) {
+
     if (evt.key === window.util.ENTER_CODE) {
       renderCard(evt);
-    }
-  };
-
-  var onEscPressClosePopup = function (evt) {
-
-    var popup = mapFiltersContainer.querySelector('.popup');
-
-    if (popup) {
-
-      if (evt.code === window.util.ESC_CODE && !popup.classList.contains('visually-hidden')) {
-        evt.preventDefault();
-        popup.querySelector('.popup__close').removeEventListener('click', closePopup);
-        mapFiltersContainer.querySelector('.popup').classList.add('visually-hidden');
-      }
-
     }
 
   };
 
   window.card = {
     onFilterChangeClosePopup: onFilterChangeClosePopup,
-    onEnterClosePopupPress: onEnterClosePopupPress,
     closePopup: closePopup,
     renderCard: renderCard,
     onEnterPinPress: onEnterPinPress,
-    onEscPressClosePopup: onEscPressClosePopup,
   };
 })();

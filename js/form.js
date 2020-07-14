@@ -77,7 +77,7 @@
     formPrice.removeEventListener('input', window.form.checkInvalidPriceInput);
     formTimeIn.removeEventListener('change', window.form.checkInvalidTimeInput);
     formTimeOut.removeEventListener('change', window.form.checkInvalidTimeInput);
-    document.removeEventListener('keydown', window.card.onEscPressClosePopup);
+    document.removeEventListener('keydown', window.card.onKeyPressClosePopup);
     mainPin.removeEventListener('mousedown', window.pin.startDrag);
   }
 

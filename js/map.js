@@ -114,7 +114,6 @@
     formTimeOut.addEventListener('change', window.form.checkInvalidTimeInput);
     mainPin.removeEventListener('mousedown', activateMap);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
-    document.addEventListener('keydown', window.card.onEscPressClosePopup);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
     mapFormTypeFilter.addEventListener('change', mapFormTypeFilterChange);
   };
