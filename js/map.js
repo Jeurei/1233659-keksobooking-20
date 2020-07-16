@@ -5,6 +5,10 @@
   var mapForm = document.querySelector('.map__filters');
   var mapFormFilters = mapForm.querySelectorAll('.map__filter');
   var mapFormTypeFilter = mapForm.querySelector('#housing-type');
+  var mapFormPriceFilter = mapForm.querySelector('#housing-price');
+  var mapFormRoomsFilter = mapForm.querySelector('#housing-rooms');
+  var mapFormGuestsFilter = mapForm.querySelector('#housing-guests');
+  var mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input');
   var formElements = form.querySelectorAll('.ad-form__element');
   var mapFormFeatures = mapForm.querySelectorAll('.map__features');
   var mainPin = document.querySelector('.map__pin--main');
@@ -66,27 +70,83 @@
     mapPins.appendChild(window.pin.createFragment(arr));
   }
 
-  function filterPinsByType() {
+  function filterPins() {
     var currentType = mapFormTypeFilter.value;
-
-    if (currentType === 'any') {
-      appendPins(window.map.pinsArr);
-      return;
-    }
-
-    var filtredPinsByType = window.map.pinsArr.filter(function (elem) {
-      return elem.offer.type === currentType;
+    var currentPrice = mapFormPriceFilter.value;
+    var currentRooms = mapFormRoomsFilter.value;
+    var currentGuests = mapFormGuestsFilter.value;
+    mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input:checked');
+    var checkedCheckboxes = Array.from(mapFormFeaturesCheckboxes).map(function (element) {
+      return element.value;
     });
 
-    window.map.filterPinsByType = filtredPinsByType;
-    appendPins(filtredPinsByType);
+    var filteredPinsByFilters = window.map.pinsArr.filter(function (element) {
+
+      if (currentType === 'any') {
+        return true;
+      }
+
+      return element.offer.type === currentType;
+    })
+    .filter(function (element) {
+
+      if (currentPrice === 'low' && element.offer.price <= 10000) {
+        return true;
+      } else if (currentPrice === 'middle' && (element.offer.price > 10000 && element.offer.price < 50000)) {
+        return true;
+      } else if (currentPrice === 'high' && element.offer.price >= 50000) {
+        return true;
+      } else if (currentPrice === 'any') {
+        return true;
+      }
+
+      return false;
+    })
+    .filter(function (element) {
+
+      if (currentRooms === 'any') {
+        return true;
+      }
+
+      return currentRooms === '' + element.offer.rooms;
+    })
+    .filter(function (element) {
+
+      if (currentGuests === 'any') {
+        return true;
+      }
+
+      return currentGuests === '' + element.offer.guests;
+    })
+    .filter(function (element) {
+      var result = false;
+      if (checkedCheckboxes.length === 0) {
+        return true;
+      }
+
+      element.offer.features.some(function (feature) {
+
+        if (checkedCheckboxes.indexOf(feature) !== -1) {
+          result = true;
+        }
+
+        return false;
+      });
+
+      if (result) {
+        return true;
+      }
+
+      return false;
+    });
+    window.map.filteredPins = filteredPinsByFilters;
+    appendPins(filteredPinsByFilters);
   }
 
-  var mapFormTypeFilterChange = function () {
+  var filterPinsByFilters = function () {
     window.card.onFilterChangeClosePopup();
-    window.util.debounce(filterPinsByType)();
+    window.util.debounce(filterPins)();
   };
-
 
   var activateMap = function () {
     map.classList.remove('map--faded');
@@ -115,7 +175,13 @@
     mainPin.removeEventListener('mousedown', activateMap);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
-    mapFormTypeFilter.addEventListener('change', mapFormTypeFilterChange);
+    mapFormTypeFilter.addEventListener('change', filterPinsByFilters);
+    mapFormPriceFilter.addEventListener('change', filterPinsByFilters);
+    mapFormRoomsFilter.addEventListener('change', filterPinsByFilters);
+    mapFormGuestsFilter.addEventListener('change', filterPinsByFilters);
+    Array.from(mapFormFeaturesCheckboxes).forEach(function (element) {
+      element.addEventListener('change', filterPinsByFilters);
+    });
   };
 
   window.map = {
