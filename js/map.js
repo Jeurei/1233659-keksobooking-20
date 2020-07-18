@@ -23,6 +23,7 @@
   var formTimeOut = form.querySelector('#timeout');
   var formAddress = form.querySelector('#address');
   var resetButton = form.querySelector('.ad-form__reset');
+
   var pricesMap = {
     'low': 10000,
     'high': 50000,
@@ -87,16 +88,22 @@
     var currentPrice = mapFormPriceFilter.value;
     var price = element.offer.price;
 
-    if (currentPrice === 'low' && price <= pricesMap['low']) {
-      return true;
-    } else if (currentPrice === 'middle' && (price > pricesMap['low'] && price < pricesMap['high'])) {
-      return true;
-    } else if (currentPrice === 'high' && price >= pricesMap['high']) {
-      return true;
-    } else if (currentPrice === 'any') {
-      return true;
+    switch (currentPrice) {
+      case 'low':
+        if (price <= pricesMap['low']) {
+          return true;
+        }
+        break;
+      case 'middle':
+        if (price > pricesMap['low'] && price < pricesMap['high']) {
+          return true;
+        }
+        break;
+      case 'high':
+        if (price >= pricesMap['high']) {
+          return true;
+        }
     }
-
     return false;
   }
 
