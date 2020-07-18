@@ -2,6 +2,10 @@
 (function () {
   var FORM_TITLE_MIN_LENGTH = 30;
   var FORM_TITLE_MAX_LENGTH = 100;
+  var VALID_TYPES = ['image', 'jpeg', 'x-png', 'png', 'gif'];
+  var DEFAULT_IMG_SRC = 'img/muffin-grey.svg"';
+  var PHOTO_PREVIEW_WIDTH = 70;
+  var PHOTO_PREVIEW_HEIGHT = 70;
   var form = document.querySelector('.ad-form');
   var formCapacity = form.querySelector('#capacity');
   var formRoomNumber = form.querySelector('#room_number');
@@ -11,6 +15,10 @@
   var formTimeIn = form.querySelector('#timein');
   var formTimeOut = form.querySelector('#timeout');
   var formSubmit = form.querySelector('.ad-form__submit');
+  var avatarInput = form.querySelector('.ad-form__field .ad-form-header__input');
+  var avatarPreview = form.querySelector('.ad-form-header__preview img');
+  var photosInput = form.querySelector('.ad-form__upload .ad-form__input');
+  var photosPreview = form.querySelector('.ad-form__photo');
   var main = document.querySelector('.main');
   var template = document.querySelector('#success');
   var resetButton = document.querySelector('.ad-form__reset');
@@ -40,6 +48,8 @@
   var onResetFormPress = function (evt) {
     if (!form.classList.contains('ad-form--disabled')) {
       evt.preventDefault();
+      avatarPreview.src = DEFAULT_IMG_SRC;
+      photosPreview.innerHTML = '';
       form.reset();
       formAddress.value = window.pin.setMainPinChords();
     }
@@ -65,7 +75,6 @@
     resetButton.removeEventListener('click', onResetFormPress);
     var successPopup = template.content.cloneNode(true);
     main.appendChild(successPopup);
-
     document.addEventListener('click', closeSuccessPopup);
     document.addEventListener('keydown', onEscPress);
     form.removeEventListener('submit', window.form.submit);
@@ -77,6 +86,7 @@
     formPrice.removeEventListener('input', window.form.checkInvalidPriceInput);
     formTimeIn.removeEventListener('change', window.form.checkInvalidTimeInput);
     formTimeOut.removeEventListener('change', window.form.checkInvalidTimeInput);
+    avatarInput.removeEventListener('change', window.form.changeAvatar);
     document.removeEventListener('keydown', window.card.onKeyPressClosePopup);
     mainPin.removeEventListener('mousedown', window.pin.startDrag);
   }
@@ -140,6 +150,53 @@
       formSubmit.removeAttribute('disabled');
     }
   }
+
+  var changeAvatar = function () {
+    var loadAvatar = function () {
+      avatarPreview.src = reader.result;
+    };
+
+    var file = avatarInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = VALID_TYPES.some(function (element) {
+      return fileName.endsWith(element);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', loadAvatar);
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  var uploadPhotos = function () {
+    var loadPhoto = function () {
+      var img = document.createElement('img');
+      img.src = reader.result;
+      img.width = PHOTO_PREVIEW_WIDTH;
+      img.height = PHOTO_PREVIEW_HEIGHT;
+      photosPreview.appendChild(img);
+    };
+
+    var file = photosInput.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = VALID_TYPES.some(function (element) {
+      return fileName.endsWith(element);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', loadPhoto);
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   window.form = {
     reset: onResetFormPress,
     submit: onSubmitPress,
@@ -147,5 +204,7 @@
     checkInvalidPriceInput: checkInvalidPriceInput,
     checkInvalidTimeInput: checkInvalidTimeInput,
     checkInvalidRoomsInput: checkInvalidRoomsInput,
+    changeAvatar: changeAvatar,
+    uploadPhotos: uploadPhotos,
   };
 })();
