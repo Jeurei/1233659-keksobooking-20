@@ -25,8 +25,11 @@
   var resetButton = form.querySelector('.ad-form__reset');
 
   var pricesMap = {
-    'low': 10000,
-    'high': 50000,
+    LOW_VALUE: 'low',
+    HIGH_VALUE: 'high',
+    MIDDLE_VALUE: 'middle',
+    LOW: 10000,
+    HIGH: 50000,
   };
 
   function removeAttributeDisabled(arr) {
@@ -88,22 +91,18 @@
     var currentPrice = mapFormPriceFilter.value;
     var price = element.offer.price;
 
-    switch (currentPrice) {
-      case 'low':
-        if (price <= pricesMap['low']) {
-          return true;
-        }
-        break;
-      case 'middle':
-        if (price > pricesMap['low'] && price < pricesMap['high']) {
-          return true;
-        }
-        break;
-      case 'high':
-        if (price >= pricesMap['high']) {
-          return true;
-        }
+    if (currentPrice === 'any') {
+      return true;
     }
+
+    if (currentPrice === pricesMap.LOW_VALUE && price <= pricesMap.LOW) {
+      return true;
+    } else if (currentPrice === pricesMap.HIGH_VALUE && price >= pricesMap.HIGH) {
+      return true;
+    } else if (currentPrice === pricesMap.MIDDLE_VALUE) {
+      return true;
+    }
+
     return false;
   }
 
