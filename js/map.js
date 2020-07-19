@@ -5,6 +5,10 @@
   var mapForm = document.querySelector('.map__filters');
   var mapFormFilters = mapForm.querySelectorAll('.map__filter');
   var mapFormTypeFilter = mapForm.querySelector('#housing-type');
+  var mapFormPriceFilter = mapForm.querySelector('#housing-price');
+  var mapFormRoomsFilter = mapForm.querySelector('#housing-rooms');
+  var mapFormGuestsFilter = mapForm.querySelector('#housing-guests');
+  var mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input');
   var formElements = form.querySelectorAll('.ad-form__element');
   var mapFormFeatures = mapForm.querySelectorAll('.map__features');
   var mainPin = document.querySelector('.map__pin--main');
@@ -19,6 +23,14 @@
   var formTimeOut = form.querySelector('#timeout');
   var formAddress = form.querySelector('#address');
   var resetButton = form.querySelector('.ad-form__reset');
+
+  var pricesMap = {
+    LOW_VALUE: 'low',
+    HIGH_VALUE: 'high',
+    MIDDLE_VALUE: 'middle',
+    LOW: 10000,
+    HIGH: 50000,
+  };
 
   function removeAttributeDisabled(arr) {
 
@@ -66,27 +78,99 @@
     mapPins.appendChild(window.pin.createFragment(arr));
   }
 
-  function filterPinsByType() {
+  function isHouseTypeFilter(element) {
     var currentType = mapFormTypeFilter.value;
-
     if (currentType === 'any') {
-      appendPins(window.map.pinsArr);
-      return;
+      return true;
     }
 
-    var filtredPinsByType = window.map.pinsArr.filter(function (elem) {
-      return elem.offer.type === currentType;
-    });
-
-    window.map.filterPinsByType = filtredPinsByType;
-    appendPins(filtredPinsByType);
+    return element.offer.type === currentType;
   }
 
-  var mapFormTypeFilterChange = function () {
-    window.card.onFilterChangeClosePopup();
-    window.util.debounce(filterPinsByType)();
-  };
+  function isPriceFilter(element) {
+    var currentPrice = mapFormPriceFilter.value;
+    var price = element.offer.price;
 
+    if (currentPrice === 'any') {
+      return true;
+    }
+
+    if (currentPrice === pricesMap.LOW_VALUE && price <= pricesMap.LOW) {
+      return true;
+    } else if (currentPrice === pricesMap.HIGH_VALUE && price >= pricesMap.HIGH) {
+      return true;
+    } else if (currentPrice === pricesMap.MIDDLE_VALUE) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function isRoomsQuantityFilter(element) {
+    var currentRooms = mapFormRoomsFilter.value;
+
+    if (currentRooms === 'any') {
+      return true;
+    }
+
+    return currentRooms === '' + element.offer.rooms;
+  }
+
+  function isGuestsQuantityFilter(element) {
+    var currentGuests = mapFormGuestsFilter.value;
+
+    if (currentGuests === 'any') {
+      return true;
+    }
+
+    return currentGuests === '' + element.offer.guests;
+  }
+
+  function isFeaturesAvailability(checkbox, element) {
+    mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input:checked');
+
+    var checkedCheckboxes = Array.from(mapFormFeaturesCheckboxes).map(function (arrElement) {
+      return arrElement.value;
+    });
+
+    if (checkedCheckboxes.length === 0) {
+      return true;
+    }
+
+    if (checkbox.checked === true && element.offer.features.indexOf(checkbox.value) !== -1) {
+      return true;
+    }
+    return false;
+  }
+
+  function filterPins() {
+    var checkboxWifi = mapForm.querySelector('#filter-wifi');
+    var checkboxDishwasher = mapForm.querySelector('#filter-dishwasher');
+    var checkboxParking = mapForm.querySelector('#filter-parking');
+    var checkboxWasher = mapForm.querySelector('#filter-washer');
+    var checkboxElevator = mapForm.querySelector('#filter-elevator');
+    var checkboxConditioner = mapForm.querySelector('#filter-conditioner');
+
+    var filteredPinsByFilters = window.map.pinsArr.filter(function (element) {
+      return (isHouseTypeFilter(element) &&
+      isPriceFilter(element) &&
+      isRoomsQuantityFilter(element) &&
+      isGuestsQuantityFilter(element) &&
+      (isFeaturesAvailability(checkboxWifi, element) ||
+      isFeaturesAvailability(checkboxDishwasher, element) ||
+      isFeaturesAvailability(checkboxParking, element) ||
+      isFeaturesAvailability(checkboxWasher, element) ||
+      isFeaturesAvailability(checkboxConditioner, element) ||
+      isFeaturesAvailability(checkboxElevator, element)));
+    });
+    window.map.filteredPins = filteredPinsByFilters;
+    appendPins(filteredPinsByFilters);
+  }
+
+  var filterPinsByFilters = function () {
+    window.card.onFilterChangeClosePopup();
+    window.util.debounce(filterPins)();
+  };
 
   var activateMap = function () {
     map.classList.remove('map--faded');
@@ -115,7 +199,13 @@
     mainPin.removeEventListener('mousedown', activateMap);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
-    mapFormTypeFilter.addEventListener('change', mapFormTypeFilterChange);
+    mapFormTypeFilter.addEventListener('change', filterPinsByFilters);
+    mapFormPriceFilter.addEventListener('change', filterPinsByFilters);
+    mapFormRoomsFilter.addEventListener('change', filterPinsByFilters);
+    mapFormGuestsFilter.addEventListener('change', filterPinsByFilters);
+    Array.from(mapFormFeaturesCheckboxes).forEach(function (element) {
+      element.addEventListener('change', filterPinsByFilters);
+    });
   };
 
   window.map = {

@@ -21,8 +21,8 @@
     var object;
     var target = evt.currentTarget.dataset.id;
 
-    if (window.map.filterPinsByType) {
-      object = window.map.filterPinsByType[target];
+    if (window.map.filteredPins) {
+      object = window.map.filteredPins[target];
     } else {
       object = window.map.pinsArr[target];
     }
