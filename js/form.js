@@ -3,7 +3,7 @@
   var FORM_TITLE_MIN_LENGTH = 30;
   var FORM_TITLE_MAX_LENGTH = 100;
   var VALID_TYPES = ['image', 'jpeg', 'x-png', 'png', 'gif'];
-  var DEFAULT_IMG_SRC = 'img/muffin-grey.svg"';
+  var DEFAULT_IMG_SRC = './img/muffin-grey.svg';
   var PHOTO_PREVIEW_WIDTH = 70;
   var PHOTO_PREVIEW_HEIGHT = 70;
   var form = document.querySelector('.ad-form');
@@ -45,11 +45,20 @@
     '100': 'Не для гостей'
   };
 
+  function clearPhotos() {
+    var photos = photosPreview.querySelectorAll('img');
+    if (photos.length !== 0) {
+      photos.forEach(function (element) {
+        element.remove();
+      });
+    }
+  }
+
   var onResetFormPress = function (evt) {
     if (!form.classList.contains('ad-form--disabled')) {
       evt.preventDefault();
       avatarPreview.src = DEFAULT_IMG_SRC;
-      photosPreview.innerHTML = '';
+      clearPhotos();
       form.reset();
       formAddress.value = window.pin.setMainPinChords();
     }
@@ -151,10 +160,11 @@
     }
   }
 
+  var loadAvatar = function (result) {
+    avatarPreview.src = result;
+  };
+
   var changeAvatar = function () {
-    var loadAvatar = function () {
-      avatarPreview.src = reader.result;
-    };
 
     var file = avatarInput.files[0];
     var fileName = file.name.toLowerCase();
@@ -166,34 +176,42 @@
     if (matches) {
       var reader = new FileReader();
 
-      reader.addEventListener('load', loadAvatar);
+      reader.addEventListener('load', function () {
+        loadAvatar(reader.result);
+      });
 
       reader.readAsDataURL(file);
     }
   };
 
+  var createPhoto = function (element) {
+    var img = document.createElement('img');
+    img.src = element.result;
+    img.width = PHOTO_PREVIEW_WIDTH;
+    img.height = PHOTO_PREVIEW_HEIGHT;
+    return img;
+  };
+
   var uploadPhotos = function () {
-    var loadPhoto = function () {
-      var img = document.createElement('img');
-      img.src = reader.result;
-      img.width = PHOTO_PREVIEW_WIDTH;
-      img.height = PHOTO_PREVIEW_HEIGHT;
-      photosPreview.appendChild(img);
-    };
+    var files = photosInput.files;
 
-    var file = photosInput.files[0];
-    var fileName = file.name.toLowerCase();
+    for (var i = 0; i < files.length; i++) {
+      var file = photosInput.files[i];
+      var fileName = file.name.toLowerCase();
 
-    var matches = VALID_TYPES.some(function (element) {
-      return fileName.endsWith(element);
-    });
+      var matches = VALID_TYPES.some(function (element) {
+        return fileName.endsWith(element);
+      });
 
-    if (matches) {
-      var reader = new FileReader();
+      if (matches) {
+        var reader = new FileReader();
 
-      reader.addEventListener('load', loadPhoto);
+        reader.addEventListener('load', function (element) {
+          photosPreview.appendChild(createPhoto(element.target));
+        });
 
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      }
     }
   };
 
