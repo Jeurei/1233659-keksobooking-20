@@ -23,6 +23,8 @@
   var formTimeOut = form.querySelector('#timeout');
   var formAddress = form.querySelector('#address');
   var resetButton = form.querySelector('.ad-form__reset');
+  var avatarInput = form.querySelector('.ad-form-header__input');
+  var photosInput = form.querySelector('.ad-form__upload .ad-form__input');
 
   var pricesMap = {
     LOW_VALUE: 'low',
@@ -196,6 +198,8 @@
     formPrice.addEventListener('input', window.form.checkInvalidPriceInput);
     formTimeIn.addEventListener('change', window.form.checkInvalidTimeInput);
     formTimeOut.addEventListener('change', window.form.checkInvalidTimeInput);
+    avatarInput.addEventListener('change', window.form.changeAvatar);
+    photosInput.addEventListener('change', window.form.uploadPhotos);
     mainPin.removeEventListener('mousedown', activateMap);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
