@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var VALUE_ANY = 'any';
   var map = document.querySelector('.map');
   var form = document.querySelector('.ad-form');
   var mapForm = document.querySelector('.map__filters');
@@ -82,7 +83,7 @@
 
   function isHouseTypeFilter(element) {
     var currentType = mapFormTypeFilter.value;
-    if (currentType === 'any') {
+    if (currentType === VALUE_ANY) {
       return true;
     }
 
@@ -93,7 +94,7 @@
     var currentPrice = mapFormPriceFilter.value;
     var price = element.offer.price;
 
-    if (currentPrice === 'any') {
+    if (currentPrice === VALUE_ANY) {
       return true;
     }
 
@@ -105,27 +106,30 @@
       return true;
     }
 
-    return false;
+    return (
+      ((currentPrice === pricesMap.LOW_VALUE) && (price <= pricesMap.LOW)) ||
+      ((currentPrice === pricesMap.HIGH_VALUE) && (price >= pricesMap.HIGH)) ||
+      ((currentPrice === pricesMap.MIDDLE_VALUE) && (price > pricesMap.LOW) && (price < pricesMap.HIGH)));
   }
 
   function isRoomsQuantityFilter(element) {
     var currentRooms = mapFormRoomsFilter.value;
 
-    if (currentRooms === 'any') {
+    if (currentRooms === VALUE_ANY) {
       return true;
     }
 
-    return currentRooms === '' + element.offer.rooms;
+    return currentRooms === String(element.offer.rooms);
   }
 
   function isGuestsQuantityFilter(element) {
     var currentGuests = mapFormGuestsFilter.value;
 
-    if (currentGuests === 'any') {
+    if (currentGuests === VALUE_ANY) {
       return true;
     }
 
-    return currentGuests === '' + element.offer.guests;
+    return currentGuests === String(element.offer.guests);
   }
 
   function isFeaturesAvailability(checkbox, element) {
