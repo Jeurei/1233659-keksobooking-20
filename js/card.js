@@ -32,6 +32,58 @@
     return img;
   };
 
+  var closePopup = function () {
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
+
+    popup.classList.add('visually-hidden');
+
+    popupClose.removeEventListener('keydown', onEnterClosePopupPress);
+
+    document.removeEventListener('keydown', onEscClosePopupPress);
+
+    popupClose.removeEventListener('click', onClickClosePopup);
+  };
+
+  var onEnterClosePopupPress = function (evt) {
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
+
+    if (evt.key === window.util.ENTER_CODE) {
+      closePopup();
+    }
+
+  };
+
+  var onEscClosePopupPress = function (evt) {
+    if (evt.key === window.util.ESC_CODE) {
+      evt.preventDefault();
+      closePopup();
+    }
+  };
+
+  var onFilterChangeClosePopup = function () {
+    popup = mapFiltersContainer.querySelector('.popup');
+    popupClose = document.querySelector('.popup__close');
+
+    if (popup && !popup.classList.contains('visually-hidden')) {
+      closePopup();
+    }
+
+  };
+
+  var onClickClosePopup = function () {
+    closePopup();
+  };
+
+  var onEnterPinPress = function (evt) {
+
+    if (evt.key === window.util.ENTER_CODE) {
+      renderOffer(evt);
+    }
+
+  };
+
   var createCard = function (evt) {
     var card = mapFiltersContainer.querySelector('.popup');
     var typeElement = null;
@@ -72,7 +124,7 @@
 
     card.querySelector('.popup__avatar').src = object.author.avatar;
     card.querySelector('.popup__close').addEventListener('keydown', onEnterClosePopupPress);
-    card.querySelector('.popup__close').addEventListener('click', closePopup);
+    card.querySelector('.popup__close').addEventListener('click', onClickClosePopup);
     document.addEventListener('keydown', onEscClosePopupPress);
     return card;
 
@@ -87,54 +139,6 @@
       card = createCard(evt);
       card.classList.remove('visually-hidden');
     }
-  };
-
-  var onEnterClosePopupPress = function (evt) {
-    popup = mapFiltersContainer.querySelector('.popup');
-    popupClose = document.querySelector('.popup__close');
-
-    if (evt.key === window.util.ENTER_CODE) {
-      closePopup();
-    }
-
-  };
-
-  var onEscClosePopupPress = function (evt) {
-    if (evt.key === window.util.ESC_CODE) {
-      evt.preventDefault();
-      closePopup();
-    }
-  };
-
-  var onFilterChangeClosePopup = function () {
-    popup = mapFiltersContainer.querySelector('.popup');
-    popupClose = document.querySelector('.popup__close');
-
-    if (popup && !popup.classList.contains('visually-hidden')) {
-      closePopup();
-    }
-
-  };
-
-  var closePopup = function () {
-    popup = mapFiltersContainer.querySelector('.popup');
-    popupClose = document.querySelector('.popup__close');
-
-    popup.classList.add('visually-hidden');
-
-    popupClose.removeEventListener('keydown', onEnterClosePopupPress);
-
-    document.removeEventListener('keydown', onEscClosePopupPress);
-
-    popupClose.removeEventListener('click', closePopup);
-  };
-
-  var onEnterPinPress = function (evt) {
-
-    if (evt.key === window.util.ENTER_CODE) {
-      renderOffer(evt);
-    }
-
   };
 
   window.card = {
