@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  var VALUE_ANY = 'any';
   var map = document.querySelector('.map');
   var form = document.querySelector('.ad-form');
   var mapForm = document.querySelector('.map__filters');
@@ -27,18 +26,10 @@
   var avatarInput = form.querySelector('.ad-form-header__input');
   var photosInput = form.querySelector('.ad-form__upload .ad-form__input');
 
-  var pricesMap = {
-    LOW_VALUE: 'low',
-    HIGH_VALUE: 'high',
-    MIDDLE_VALUE: 'middle',
-    LOW: 10000,
-    HIGH: 50000,
-  };
+  function removeAttributeDisabled(array) {
 
-  function removeAttributeDisabled(arr) {
-
-    arr.forEach(function (elem) {
-      elem.removeAttribute('disabled');
+    array.forEach(function (element) {
+      element.removeAttribute('disabled');
     });
 
   }
@@ -47,8 +38,8 @@
     var previousPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
     if (previousPins) {
-      previousPins.forEach(function (elem) {
-        elem.parentNode.removeChild(elem);
+      previousPins.forEach(function (element) {
+        element.parentNode.removeChild(element);
       });
     }
 
@@ -57,14 +48,14 @@
   var onEnterMainPinPress = function (evt) {
 
     if (evt.key === window.util.ENTER_CODE) {
-      activateMap();
+      renderPage();
     }
 
   };
 
-  function onSuccess(arr) {
-    mapPins.appendChild(window.pin.createFragment(arr));
-    window.map.pinsArr = arr;
+  function onSuccess(array) {
+    mapPins.appendChild(window.pin.createFragment(array));
+    window.map.pinsArr = array;
 
     if (mapFormFilters.length !== 0) {
       removeAttributeDisabled(mapFormFilters);
@@ -76,109 +67,12 @@
 
   }
 
-  function appendPins(arr) {
-    clearPins();
-    mapPins.appendChild(window.pin.createFragment(arr));
-  }
-
-  function isHouseTypeFilter(element) {
-    var currentType = mapFormTypeFilter.value;
-    if (currentType === VALUE_ANY) {
-      return true;
-    }
-
-    return element.offer.type === currentType;
-  }
-
-  function isPriceFilter(element) {
-    var currentPrice = mapFormPriceFilter.value;
-    var price = element.offer.price;
-
-    if (currentPrice === VALUE_ANY) {
-      return true;
-    }
-
-    if (currentPrice === pricesMap.LOW_VALUE && price <= pricesMap.LOW) {
-      return true;
-    } else if (currentPrice === pricesMap.HIGH_VALUE && price >= pricesMap.HIGH) {
-      return true;
-    } else if (currentPrice === pricesMap.MIDDLE_VALUE) {
-      return true;
-    }
-
-    return (
-      ((currentPrice === pricesMap.LOW_VALUE) && (price <= pricesMap.LOW)) ||
-      ((currentPrice === pricesMap.HIGH_VALUE) && (price >= pricesMap.HIGH)) ||
-      ((currentPrice === pricesMap.MIDDLE_VALUE) && (price > pricesMap.LOW) && (price < pricesMap.HIGH)));
-  }
-
-  function isRoomsQuantityFilter(element) {
-    var currentRooms = mapFormRoomsFilter.value;
-
-    if (currentRooms === VALUE_ANY) {
-      return true;
-    }
-
-    return currentRooms === String(element.offer.rooms);
-  }
-
-  function isGuestsQuantityFilter(element) {
-    var currentGuests = mapFormGuestsFilter.value;
-
-    if (currentGuests === VALUE_ANY) {
-      return true;
-    }
-
-    return currentGuests === String(element.offer.guests);
-  }
-
-  function isFeaturesAvailability(checkbox, element) {
-    mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input:checked');
-
-    var checkedCheckboxes = Array.from(mapFormFeaturesCheckboxes).map(function (arrElement) {
-      return arrElement.value;
-    });
-
-    if (checkedCheckboxes.length === 0) {
-      return true;
-    }
-
-    if (checkbox.checked === true && element.offer.features.indexOf(checkbox.value) !== -1) {
-      return true;
-    }
-    return false;
-  }
-
-  function filterPins() {
-    var checkboxWifi = mapForm.querySelector('#filter-wifi');
-    var checkboxDishwasher = mapForm.querySelector('#filter-dishwasher');
-    var checkboxParking = mapForm.querySelector('#filter-parking');
-    var checkboxWasher = mapForm.querySelector('#filter-washer');
-    var checkboxElevator = mapForm.querySelector('#filter-elevator');
-    var checkboxConditioner = mapForm.querySelector('#filter-conditioner');
-
-    var filteredPinsByFilters = window.map.pinsArr.filter(function (element) {
-      return (isHouseTypeFilter(element) &&
-      isPriceFilter(element) &&
-      isRoomsQuantityFilter(element) &&
-      isGuestsQuantityFilter(element) &&
-      (isFeaturesAvailability(checkboxWifi, element) ||
-      isFeaturesAvailability(checkboxDishwasher, element) ||
-      isFeaturesAvailability(checkboxParking, element) ||
-      isFeaturesAvailability(checkboxWasher, element) ||
-      isFeaturesAvailability(checkboxConditioner, element) ||
-      isFeaturesAvailability(checkboxElevator, element)));
-    });
-    window.map.filteredPins = filteredPinsByFilters;
-    appendPins(filteredPinsByFilters);
-  }
-
   var filterPinsByFilters = function () {
     window.card.onFilterChangeClosePopup();
-    window.util.debounce(filterPins)();
+    window.util.debounce(window.filter.filterPins)();
   };
 
-  var activateMap = function () {
+  var renderPage = function () {
     map.classList.remove('map--faded');
     clearPins();
 
@@ -192,7 +86,7 @@
       removeAttributeDisabled(formElements);
     }
 
-    formAddress.value = (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + (mainPin.offsetTop + mainPin.offsetHeight);
+    formAddress.value = window.pin.setMainPinChords();
     form.addEventListener('submit', window.form.submit);
     resetButton.addEventListener('click', window.form.reset);
     formCapacity.addEventListener('change', window.form.checkInvalidRoomsInput);
@@ -204,7 +98,7 @@
     formTimeOut.addEventListener('change', window.form.checkInvalidTimeInput);
     avatarInput.addEventListener('change', window.form.changeAvatar);
     photosInput.addEventListener('change', window.form.uploadPhotos);
-    mainPin.removeEventListener('mousedown', activateMap);
+    mainPin.removeEventListener('mousedown', renderPage);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
     mapFormTypeFilter.addEventListener('change', filterPinsByFilters);
@@ -217,7 +111,7 @@
   };
 
   window.map = {
-    activateMap: activateMap,
+    renderPage: renderPage,
     onEnterMainPinPress: onEnterMainPinPress,
     clear: clearPins,
   };

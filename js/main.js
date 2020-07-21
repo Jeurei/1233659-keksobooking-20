@@ -9,9 +9,9 @@
   var mapFormFeatures = mapForm.querySelectorAll('.map__features');
   var mainPin = document.querySelector('.map__pin--main');
 
-  function addAttributeDisabled(arr) {
-    arr.forEach(function (elem) {
-      elem.setAttribute('disabled', true);
+  function addAttributeDisabled(array) {
+    array.forEach(function (element) {
+      element.setAttribute('disabled', true);
     });
   }
 
@@ -30,9 +30,10 @@
     addAttributeDisabled(mapFormFeatures);
 
     formAddress.value = window.pin.setMainPinChords();
-    mainPin.addEventListener('mousedown', window.map.activateMap);
+    mainPin.addEventListener('mousedown', window.map.renderPage);
     mainPin.addEventListener('keydown', window.map.onEnterMainPinPress);
   }
+
   initPage();
 
   window.main = {

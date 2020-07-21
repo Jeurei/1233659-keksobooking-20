@@ -54,16 +54,6 @@
     }
   }
 
-  var onResetFormPress = function (evt) {
-    if (!form.classList.contains('ad-form--disabled')) {
-      evt.preventDefault();
-      avatarPreview.src = DEFAULT_IMG_SRC;
-      clearPhotos();
-      form.reset();
-      formAddress.value = window.pin.setMainPinChords();
-    }
-  };
-
   var closeSuccessPopup = function () {
     document.removeEventListener('click', closeSuccessPopup);
     document.removeEventListener('keydown', onEscPress);
@@ -72,20 +62,18 @@
 
   var onEscPress = function (evt) {
     if (evt.key === window.util.ESC_CODE) {
+      evt.preventDefault();
       closeSuccessPopup();
     }
   };
 
-  function onSuccessSubmit() {
+  var pageReset = function () {
+    form.reset();
     window.map.clear();
     window.main.initPage();
-    form.reset();
-    formAddress.value = window.pin.setMainPinChords();
+    avatarPreview.src = DEFAULT_IMG_SRC;
+    clearPhotos();
     resetButton.removeEventListener('click', onResetFormPress);
-    var successPopup = template.content.cloneNode(true);
-    main.appendChild(successPopup);
-    document.addEventListener('click', closeSuccessPopup);
-    document.addEventListener('keydown', onEscPress);
     form.removeEventListener('submit', window.form.submit);
     resetButton.removeEventListener('click', window.form.reset);
     formCapacity.removeEventListener('change', window.form.checkInvalidRoomsInput);
@@ -98,6 +86,22 @@
     avatarInput.removeEventListener('change', window.form.changeAvatar);
     document.removeEventListener('keydown', window.card.onKeyPressClosePopup);
     mainPin.removeEventListener('mousedown', window.pin.startDrag);
+    formAddress.value = window.pin.setMainPinChords();
+  };
+
+  var onResetFormPress = function (evt) {
+    if (!form.classList.contains('ad-form--disabled')) {
+      evt.preventDefault();
+      pageReset();
+    }
+  };
+
+  function onSuccessSubmit() {
+    pageReset();
+    var successPopup = template.content.cloneNode(true);
+    main.appendChild(successPopup);
+    document.addEventListener('click', closeSuccessPopup);
+    document.addEventListener('keydown', onEscPress);
   }
 
   function onSubmitPress(evt) {

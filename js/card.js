@@ -40,24 +40,24 @@
     card.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
     features = card.querySelector('.popup__features');
     features.innerHTML = '';
-    object.offer.features.forEach(function (elem) {
+    object.offer.features.forEach(function (element) {
       var li = document.createElement('li');
       li.classList.add('popup__feature');
-      li.classList.add('popup__feature--' + elem);
-      li.textContent = elem;
+      li.classList.add('popup__feature--' + element);
+      li.textContent = element;
       features.appendChild(li);
     });
 
     card.querySelector('.popup__description').textContent = object.offer.description;
     photos = card.querySelector('.popup__photos');
     photos.innerHTML = '';
-    object.offer.photos.forEach(function (elem) {
+    object.offer.photos.forEach(function (element) {
       var img = document.createElement('img');
       img.classList.add('popup__photo');
       img.alt = 'Фотография жилья';
       img.width = 45;
       img.height = 40;
-      img.src = elem;
+      img.src = element;
       photos.appendChild(img);
     });
 
@@ -69,7 +69,7 @@
 
   };
 
-  var renderCard = function (evt) {
+  var renderOffer = function (evt) {
     var card = mapFiltersContainer.querySelector('.popup');
     if (!card) {
       card = createCard(evt);
@@ -97,6 +97,10 @@
     }
   };
 
+  var onClickClosePopup = function () {
+    closePopup();
+  };
+
   function onFilterChangeClosePopup() {
     popup = mapFiltersContainer.querySelector('.popup');
     popupClose = document.querySelector('.popup__close');
@@ -117,13 +121,13 @@
 
     document.removeEventListener('keydown', onEscClosePopupPress);
 
-    popupClose.removeEventListener('click', closePopup);
+    popupClose.removeEventListener('click', onClickClosePopup);
   };
 
   var onEnterPinPress = function (evt) {
 
     if (evt.key === window.util.ENTER_CODE) {
-      renderCard(evt);
+      renderOffer(evt);
     }
 
   };
@@ -131,7 +135,7 @@
   window.card = {
     onFilterChangeClosePopup: onFilterChangeClosePopup,
     closePopup: closePopup,
-    renderCard: renderCard,
+    renderOffer: renderOffer,
     onEnterPinPress: onEnterPinPress,
   };
 })();

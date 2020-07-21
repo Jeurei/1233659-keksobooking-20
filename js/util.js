@@ -22,6 +22,10 @@
       errorTemplate.querySelector('.error__button').removeEventListener('click', closeError);
     }
 
+    var onErrorButtonClickCloseError = function () {
+      closeError();
+    };
+
     if (errorTemplate) {
       var errorPopup = errorTemplate.content.querySelector('.error').cloneNode(true);
       if (text) {
@@ -32,7 +36,7 @@
 
       document.addEventListener('click', closeError);
 
-      errorPopup.querySelector('.error__button').addEventListener('click', closeError);
+      errorPopup.querySelector('.error__button').addEventListener('click', onErrorButtonClickCloseError);
 
       document.querySelector('.main').appendChild(errorPopup);
     }
@@ -56,9 +60,6 @@
   window.util = {
     ESC_CODE: ESC_CODE,
     ENTER_CODE: ENTER_CODE,
-    getRandomInRange: function getRandomInRange(min, max) {
-      return Math.floor(min + Math.random() * (max + 1 - min));
-    },
     onError: onError,
     debounce: debounce,
   };
