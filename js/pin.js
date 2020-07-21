@@ -7,14 +7,16 @@
   var MAIN_PIN_BOTTOM_LIMIT = 630;
   var QUANTITY_OF_PINS = 5;
   var mainPin = document.querySelector('.map__pin--main');
+  var pinHalfOffsetWidth = mainPin.offsetWidth / 2;
+  var pinOffsetHeight = mainPin.offsetHeight;
   var form = document.querySelector('.ad-form');
   var formAddress = form.querySelector('#address');
   var map = document.querySelector('.map__pins');
   var mapWidth = map.offsetWidth;
 
-  function setMainPinChords() {
-    return (Math.floor(mainPin.offsetLeft + mainPin.offsetWidth / 2)) + ' ' + Math.floor((mainPin.offsetTop + mainPin.offsetHeight));
-  }
+  var setMainPinChords = function () {
+    return (Math.floor(mainPin.offsetLeft + pinHalfOffsetWidth)) + ' ' + Math.floor((mainPin.offsetTop + pinOffsetHeight));
+  };
 
   var startDrag = function (evt) {
     evt.preventDefault();
@@ -39,17 +41,17 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      if (mainPin.offsetTop + mainPin.offsetHeight - shift.y < MAIN_PIN_TOP_LIMIT) {
+      if (mainPin.offsetTop + pinOffsetHeight - shift.y < MAIN_PIN_TOP_LIMIT) {
         mainPin.style.top = MAIN_PIN_TOP_LIMIT;
-      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeight) {
-        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT - mainPin.offsetHeigh + 'px';
+      } else if (mainPin.offsetTop - shift.y > MAIN_PIN_BOTTOM_LIMIT - pinOffsetHeight) {
+        mainPin.style.top = MAIN_PIN_BOTTOM_LIMIT - pinOffsetHeight + 'px';
       } else {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
-      if (mainPin.offsetLeft - shift.x < 0 - mainPin.offsetWidth / 2) {
-        mainPin.style.left = 0 - mainPin.offsetWidth / 2 + 'px';
-      } else if (mainPin.offsetLeft - shift.x > mapWidth - mainPin.offsetWidth / 2) {
-        mainPin.style.left = mapWidth - mainPin.offsetWidth / 2 + 'px';
+      if (mainPin.offsetLeft - shift.x < 0 - pinHalfOffsetWidth) {
+        mainPin.style.left = 0 - pinHalfOffsetWidth + 'px';
+      } else if (mainPin.offsetLeft - shift.x > mapWidth - pinHalfOffsetWidth) {
+        mainPin.style.left = mapWidth - pinHalfOffsetWidth + 'px';
       } else {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
       }
@@ -74,7 +76,7 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  function createFragment(array) {
+  var createFragment = function (array) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var fragment = document.createDocumentFragment();
 
@@ -99,7 +101,7 @@
     });
 
     return fragment;
-  }
+  };
   window.pin = {
     createFragment: createFragment,
     startDrag: startDrag,

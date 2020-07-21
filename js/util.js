@@ -6,13 +6,13 @@
   var errorTemplate = document.querySelector('#error');
   function onError(text) {
 
-    function onErrorEscPress(evt) {
+    var onErrorEscPress = function (evt) {
       if (evt.key === ESC_CODE) {
         closeError();
       }
-    }
+    };
 
-    function closeError() {
+    var closeError = function () {
       document.querySelector('.error').remove();
 
       document.removeEventListener('keydown', onErrorEscPress);
@@ -20,7 +20,7 @@
       document.removeEventListener('click', closeError);
 
       errorTemplate.querySelector('.error__button').removeEventListener('click', closeError);
-    }
+    };
 
     var onErrorButtonClickCloseError = function () {
       closeError();
@@ -42,7 +42,7 @@
     }
   }
 
-  function debounce(callback) {
+  var debounce = function (callback) {
     var lastTimeout = null;
     return function () {
       var parameters = arguments;
@@ -55,7 +55,7 @@
         callback.apply(null, parameters);
       }, DEBOUNCE_INTERVAL);
     };
-  }
+  };
 
   window.util = {
     ESC_CODE: ESC_CODE,

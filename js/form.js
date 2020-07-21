@@ -3,7 +3,6 @@
   var FORM_TITLE_MIN_LENGTH = 30;
   var FORM_TITLE_MAX_LENGTH = 100;
   var VALID_TYPES = ['image', 'jpeg', 'x-png', 'png', 'gif'];
-  var DEFAULT_IMG_SRC = './img/muffin-grey.svg';
   var PHOTO_PREVIEW_WIDTH = 70;
   var PHOTO_PREVIEW_HEIGHT = 70;
   var form = document.querySelector('.ad-form');
@@ -21,9 +20,6 @@
   var photosPreview = form.querySelector('.ad-form__photo');
   var main = document.querySelector('.main');
   var template = document.querySelector('#success');
-  var resetButton = document.querySelector('.ad-form__reset');
-  var formAddress = form.querySelector('#address');
-  var mainPin = document.querySelector('.map__pin--main');
   var roomsValidMap = {
     '1': 1,
     '2': 2,
@@ -45,14 +41,14 @@
     '100': 'Не для гостей'
   };
 
-  function clearPhotos() {
+  var clearPhotos = function () {
     var photos = photosPreview.querySelectorAll('img');
-    if (photos.length !== 0) {
+    if (photos.length) {
       photos.forEach(function (element) {
         element.remove();
       });
     }
-  }
+  };
 
   var closeSuccessPopup = function () {
     document.removeEventListener('click', closeSuccessPopup);
@@ -67,49 +63,7 @@
     }
   };
 
-  var pageReset = function () {
-    form.reset();
-    window.map.clear();
-    window.main.initPage();
-    avatarPreview.src = DEFAULT_IMG_SRC;
-    clearPhotos();
-    resetButton.removeEventListener('click', onResetFormPress);
-    form.removeEventListener('submit', window.form.submit);
-    resetButton.removeEventListener('click', window.form.reset);
-    formCapacity.removeEventListener('change', window.form.checkInvalidRoomsInput);
-    formRoomNumber.removeEventListener('change', window.form.checkInvalidRoomsInput);
-    formTitle.removeEventListener('input', window.form.checkInvalidTitleInput);
-    formType.removeEventListener('change', window.form.checkInvalidPriceInput);
-    formPrice.removeEventListener('input', window.form.checkInvalidPriceInput);
-    formTimeIn.removeEventListener('change', window.form.checkInvalidTimeInput);
-    formTimeOut.removeEventListener('change', window.form.checkInvalidTimeInput);
-    avatarInput.removeEventListener('change', window.form.changeAvatar);
-    document.removeEventListener('keydown', window.card.onKeyPressClosePopup);
-    mainPin.removeEventListener('mousedown', window.pin.startDrag);
-    formAddress.value = window.pin.setMainPinChords();
-  };
-
-  var onResetFormPress = function (evt) {
-    if (!form.classList.contains('ad-form--disabled')) {
-      evt.preventDefault();
-      pageReset();
-    }
-  };
-
-  function onSuccessSubmit() {
-    pageReset();
-    var successPopup = template.content.cloneNode(true);
-    main.appendChild(successPopup);
-    document.addEventListener('click', closeSuccessPopup);
-    document.addEventListener('keydown', onEscPress);
-  }
-
-  function onSubmitPress(evt) {
-    evt.preventDefault();
-    window.backend.save(new FormData(form), onSuccessSubmit, window.util.onError);
-  }
-
-  function checkInvalidTitleInput() {
+  var checkInvalidTitleInput = function () {
     if (formTitle.value.length < FORM_TITLE_MIN_LENGTH) {
       formTitle.setCustomValidity('Не менее ' + FORM_TITLE_MIN_LENGTH + ' символов');
       formSubmit.setAttribute('disabled', true);
@@ -120,9 +74,9 @@
       formTitle.setCustomValidity('');
       formSubmit.removeAttribute('disabled');
     }
-  }
+  };
 
-  function checkInvalidPriceInput() {
+  var checkInvalidPriceInput = function () {
     formPrice.placeholder = offerTypePricesMap[formType.value];
 
     if (offerTypePricesMap[formType.value] > formPrice.value) {
@@ -133,17 +87,17 @@
       formSubmit.removeAttribute('disabled');
     }
 
-  }
+  };
 
-  function checkInvalidTimeInput(evt) {
+  var checkInvalidTimeInput = function (evt) {
     if (evt.target.id === 'timein') {
       formTimeOut.value = formTimeIn.value;
     } else {
       formTimeIn.value = formTimeOut.value;
     }
-  }
+  };
 
-  function checkInvalidRoomsInput() {
+  var checkInvalidRoomsInput = function () {
 
     if (formRoomNumber.value === '100' && formCapacity.value !== roomsValidMap[formRoomNumber.value]) {
       formCapacity.setCustomValidity(roomsValidityErrorMesages[formRoomNumber.value]);
@@ -162,7 +116,28 @@
       formCapacity.setCustomValidity('');
       formSubmit.removeAttribute('disabled');
     }
-  }
+  };
+
+
+  var onResetFormPress = function (evt) {
+    if (!form.classList.contains('ad-form--disabled')) {
+      evt.preventDefault();
+      window.main.deactivatePage();
+    }
+  };
+
+  var onSuccessSubmit = function () {
+    window.main.deactivatePage();
+    var successPopup = template.content.cloneNode(true);
+    main.appendChild(successPopup);
+    document.addEventListener('click', closeSuccessPopup);
+    document.addEventListener('keydown', onEscPress);
+  };
+
+  var onSubmitPress = function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(form), onSuccessSubmit, window.util.onError);
+  };
 
   var loadAvatar = function (result) {
     avatarPreview.src = result;
@@ -226,6 +201,7 @@
     checkInvalidPriceInput: checkInvalidPriceInput,
     checkInvalidTimeInput: checkInvalidTimeInput,
     checkInvalidRoomsInput: checkInvalidRoomsInput,
+    clearPhotos: clearPhotos,
     changeAvatar: changeAvatar,
     uploadPhotos: uploadPhotos,
   };

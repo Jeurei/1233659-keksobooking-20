@@ -26,15 +26,15 @@
   var avatarInput = form.querySelector('.ad-form-header__input');
   var photosInput = form.querySelector('.ad-form__upload .ad-form__input');
 
-  function removeAttributeDisabled(array) {
+  var removeAttributeDisabled = function (array) {
 
     array.forEach(function (element) {
       element.removeAttribute('disabled');
     });
 
-  }
+  };
 
-  function clearPins() {
+  var clearPins = function () {
     var previousPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
     if (previousPins) {
@@ -43,36 +43,37 @@
       });
     }
 
-  }
+  };
+
 
   var onEnterMainPinPress = function (evt) {
 
     if (evt.key === window.util.ENTER_CODE) {
-      renderPage();
+      activatePage();
     }
 
   };
 
-  function onSuccess(array) {
+  var onSuccess = function (array) {
     mapPins.appendChild(window.pin.createFragment(array));
     window.map.pinsArr = array;
 
-    if (mapFormFilters.length !== 0) {
+    if (mapFormFilters.length) {
       removeAttributeDisabled(mapFormFilters);
     }
 
-    if (mapFormFeatures.length !== 0) {
+    if (mapFormFeatures.length) {
       removeAttributeDisabled(mapFormFeatures);
     }
 
-  }
+  };
 
   var filterPinsByFilters = function () {
     window.card.onFilterChangeClosePopup();
     window.util.debounce(window.filter.filterPins)();
   };
 
-  var renderPage = function () {
+  var activatePage = function () {
     map.classList.remove('map--faded');
     clearPins();
 
@@ -82,7 +83,7 @@
 
     form.classList.remove('ad-form--disabled');
 
-    if (formElements.length !== 0) {
+    if (formElements.length) {
       removeAttributeDisabled(formElements);
     }
 
@@ -98,7 +99,7 @@
     formTimeOut.addEventListener('change', window.form.checkInvalidTimeInput);
     avatarInput.addEventListener('change', window.form.changeAvatar);
     photosInput.addEventListener('change', window.form.uploadPhotos);
-    mainPin.removeEventListener('mousedown', renderPage);
+    mainPin.removeEventListener('mousedown', activatePage);
     mainPin.removeEventListener('keydown', onEnterMainPinPress);
     mainPin.addEventListener('mousedown', window.pin.startDrag);
     mapFormTypeFilter.addEventListener('change', filterPinsByFilters);
@@ -111,7 +112,7 @@
   };
 
   window.map = {
-    renderPage: renderPage,
+    activatePage: activatePage,
     onEnterMainPinPress: onEnterMainPinPress,
     clear: clearPins,
   };

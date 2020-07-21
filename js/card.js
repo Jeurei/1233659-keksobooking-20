@@ -1,7 +1,8 @@
 'use strict';
 (function () {
-  var map = document.querySelector('.map');
-  var mapFiltersContainer = map.querySelector('.map__filters-container');
+  var DEFAULT_PHOTO_WIDTH = 45;
+  var DEFAULT_PHOTO_HEIGHT = 40;
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var popup = mapFiltersContainer.querySelector('.popup');
   var popupClose = document.querySelector('.popup__close');
@@ -13,12 +14,30 @@
     BUNGALO: 'бунгало'
   };
 
+  var createFeatureElement = function (element) {
+    var li = document.createElement('li');
+    li.classList.add('popup__feature');
+    li.classList.add('popup__feature--' + element);
+    li.textContent = element;
+    return li;
+  };
+
+  var createPhotoElement = function (element) {
+    var img = document.createElement('img');
+    img.classList.add('popup__photo');
+    img.alt = 'Фотография жилья';
+    img.width = DEFAULT_PHOTO_WIDTH;
+    img.height = DEFAULT_PHOTO_HEIGHT;
+    img.src = element;
+    return img;
+  };
+
   var createCard = function (evt) {
     var card = mapFiltersContainer.querySelector('.popup');
-    var type;
-    var features;
-    var photos;
-    var object;
+    var typeElement = null;
+    var featuresElement = null;
+    var photosElement = null;
+    var object = null;
     var target = evt.currentTarget.dataset.id;
 
     if (window.map.filteredPins) {
@@ -31,34 +50,24 @@
       card = cardTemplate.cloneNode(true);
     }
 
-    type = card.querySelector('.popup__type');
+    typeElement = card.querySelector('.popup__type');
     card.querySelector('.popup__title').textContent = object.offer.title;
     card.querySelector('.popup__text--address').textContent = object.offer.adress;
     card.querySelector('.popup__text--price').textContent = object.offer.price + ' ₽/ночь';
-    type.textContent = OfferTypeMap[object.offer.type.toUpperCase()];
+    typeElement.textContent = OfferTypeMap[object.offer.type.toUpperCase()];
     card.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.guests + ' гостей';
     card.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout;
-    features = card.querySelector('.popup__features');
-    features.innerHTML = '';
+    featuresElement = card.querySelector('.popup__features');
+    featuresElement.innerHTML = '';
     object.offer.features.forEach(function (element) {
-      var li = document.createElement('li');
-      li.classList.add('popup__feature');
-      li.classList.add('popup__feature--' + element);
-      li.textContent = element;
-      features.appendChild(li);
+      featuresElement.appendChild(createFeatureElement(element));
     });
 
     card.querySelector('.popup__description').textContent = object.offer.description;
-    photos = card.querySelector('.popup__photos');
-    photos.innerHTML = '';
+    photosElement = card.querySelector('.popup__photos');
+    photosElement.innerHTML = '';
     object.offer.photos.forEach(function (element) {
-      var img = document.createElement('img');
-      img.classList.add('popup__photo');
-      img.alt = 'Фотография жилья';
-      img.width = 45;
-      img.height = 40;
-      img.src = element;
-      photos.appendChild(img);
+      photosElement.appendChild(createPhotoElement(element));
     });
 
     card.querySelector('.popup__avatar').src = object.author.avatar;
@@ -97,11 +106,7 @@
     }
   };
 
-  var onClickClosePopup = function () {
-    closePopup();
-  };
-
-  function onFilterChangeClosePopup() {
+  var onFilterChangeClosePopup = function () {
     popup = mapFiltersContainer.querySelector('.popup');
     popupClose = document.querySelector('.popup__close');
 
@@ -109,7 +114,7 @@
       closePopup();
     }
 
-  }
+  };
 
   var closePopup = function () {
     popup = mapFiltersContainer.querySelector('.popup');
@@ -121,7 +126,7 @@
 
     document.removeEventListener('keydown', onEscClosePopupPress);
 
-    popupClose.removeEventListener('click', onClickClosePopup);
+    popupClose.removeEventListener('click', closePopup);
   };
 
   var onEnterPinPress = function (evt) {

@@ -10,7 +10,7 @@
   var mapPins = document.querySelector('.map__pins');
   var mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input');
 
-  var pricesMap = {
+  var PricesMap = {
     LOW_VALUE: 'low',
     HIGH_VALUE: 'high',
     MIDDLE_VALUE: 'middle',
@@ -18,21 +18,21 @@
     HIGH: 50000,
   };
 
-  function appendPins(array) {
+  var appendPins = function () {
     window.map.clear();
-    mapPins.appendChild(window.pin.createFragment(array));
-  }
+    mapPins.appendChild(window.pin.createFragment(filterPins()));
+  };
 
-  function isHouseTypeFilter(element) {
+  var isHouseTypeFilter = function (element) {
     var currentType = mapFormTypeFilter.value;
     if (currentType === VALUE_ANY) {
       return true;
     }
 
     return element.offer.type === currentType;
-  }
+  };
 
-  function isPriceFilter(element) {
+  var isPriceFilter = function (element) {
     var currentPrice = mapFormPriceFilter.value;
     var price = element.offer.price;
 
@@ -41,12 +41,12 @@
     }
 
     return (
-      ((currentPrice === pricesMap.LOW_VALUE) && (price <= pricesMap.LOW)) ||
-      ((currentPrice === pricesMap.HIGH_VALUE) && (price >= pricesMap.HIGH)) ||
-      ((currentPrice === pricesMap.MIDDLE_VALUE) && (price > pricesMap.LOW) && (price < pricesMap.HIGH)));
-  }
+      ((currentPrice === PricesMap.LOW_VALUE) && (price <= PricesMap.LOW)) ||
+      ((currentPrice === PricesMap.HIGH_VALUE) && (price >= PricesMap.HIGH)) ||
+      ((currentPrice === PricesMap.MIDDLE_VALUE) && (price > PricesMap.LOW) && (price < PricesMap.HIGH)));
+  };
 
-  function isRoomsQuantityFilter(element) {
+  var isRoomsQuantityFilter = function (element) {
     var currentRooms = mapFormRoomsFilter.value;
 
     if (currentRooms === VALUE_ANY) {
@@ -54,9 +54,9 @@
     }
 
     return currentRooms === String(element.offer.rooms);
-  }
+  };
 
-  function isGuestsQuantityFilter(element) {
+  var isGuestsQuantityFilter = function (element) {
     var currentGuests = mapFormGuestsFilter.value;
 
     if (currentGuests === VALUE_ANY) {
@@ -64,9 +64,9 @@
     }
 
     return currentGuests === String(element.offer.guests);
-  }
+  };
 
-  function isFeaturesAvailability(checkbox, element) {
+  var isFeaturesAvailability = function (checkbox, element) {
     mapFormFeaturesCheckboxes = mapForm.querySelectorAll('#housing-features input:checked');
 
     var checkedCheckboxes = Array.from(mapFormFeaturesCheckboxes).map(function (arrElement) {
@@ -81,9 +81,9 @@
       return true;
     }
     return false;
-  }
+  };
 
-  function filterPins() {
+  var filterPins = function () {
     var checkboxWifi = mapForm.querySelector('#filter-wifi');
     var checkboxDishwasher = mapForm.querySelector('#filter-dishwasher');
     var checkboxParking = mapForm.querySelector('#filter-parking');
@@ -114,11 +114,12 @@
     }
 
     window.map.filteredPins = filteredPinsByFilters;
-    appendPins(filteredPinsByFilters);
-  }
+    return filteredPinsByFilters;
+  };
+
 
   window.filter = {
-    filterPins: filterPins,
+    filterPins: appendPins,
   };
 
 })();
